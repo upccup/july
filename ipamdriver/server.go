@@ -7,11 +7,11 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/upccup/july/db"
+	"github.com/upccup/july/util"
+
 	log "github.com/Sirupsen/logrus"
 	"github.com/docker/go-plugins-helpers/ipam"
-
-	"oam-docker-ipam/db"
-	"oam-docker-ipam/util"
 )
 
 const (

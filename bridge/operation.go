@@ -7,9 +7,9 @@ import (
 	"os/exec"
 	"strings"
 
-	log "github.com/Sirupsen/logrus"
+	"github.com/upccup/july/util"
 
-	"oam-docker-ipam/util"
+	log "github.com/Sirupsen/logrus"
 )
 
 func createBridge(ip, subnet, gateway string) error {
