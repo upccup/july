@@ -77,18 +77,23 @@ func getHost(ip string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	if len(ip_pool) == 0 {
 		return "", errors.New("Pool is empty")
 	}
+
 	if ip == "" {
 		find_ip := strings.Split(ip_pool[0].Key, "/")
 		ip = find_ip[len(find_ip)-1]
 	} else if exist := db.IsKeyExist(filepath.Join(network_key_prefix, "pool", ip)); exist != true {
 		return "", errors.New(fmt.Sprintf("Host %s not in pool", ip))
 	}
+
 	if assigned := checkIPAssigned(ip); assigned == true {
 		return "", errors.New(fmt.Sprintf("Host %s has been allocated", ip))
 	}
+
+	log.Infof("Host IP: %s", ip)
 	return ip, nil
 }
 
@@ -112,7 +117,7 @@ func ReleaseHost(ip string) error {
 	return err
 }
 
-func CreateNetwork(ip string) {
+func CreateNetwork(ip, networkName string) {
 	var assigned_ip string
 	var config *Config
 	var err error
@@ -120,17 +125,23 @@ func CreateNetwork(ip string) {
 	if config, err = getConfig(); err != nil {
 		log.Fatal(err)
 	}
+
 	if assigned_ip, err = getHost(ip); err != nil {
 		log.Fatal(err)
 	}
+
 	if err = allocateHost(assigned_ip); err != nil {
 		log.Fatal(err)
 	}
-	if err = createBridge(assigned_ip, config.Subnet, config.Gateway); err != nil {
+	if err = createBridge(assigned_ip, config.Subnet, config.Gateway, networkName); err != nil {
 		log.Fatal(err)
 	}
-	if err = restart_network(); err != nil {
-		log.Fatal(err)
-	}
-	log.Infof("Create network %s done", assigned_ip)
+
+	// TODO(upccup): now restart network maybe make network donot work, after find the reason and
+	// fix it this will work again
+	//if err = restart_network(); err != nil {
+	//	log.Fatal(err)
+	//}
+	//log.Infof("Create network %s done", assigned_ip)
+	log.Infof("Create network on ip:%s done, please restart network or reboot!!", assigned_ip)
 }
