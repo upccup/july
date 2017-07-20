@@ -1,8 +1,9 @@
 package main
 
 import (
-	"oam-docker-ipam/command"
 	"os"
+
+	"github.com/upccup/july/command"
 
 	"github.com/codegangsta/cli"
 )

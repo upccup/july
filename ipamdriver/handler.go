@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/upccup/july/util"
+
 	log "github.com/Sirupsen/logrus"
 	"github.com/docker/go-plugins-helpers/ipam"
 	netlabel "github.com/docker/libnetwork/netlabel"
-
-	"oam-docker-ipam/util"
 )
 
 type MyIPAMHandler struct {

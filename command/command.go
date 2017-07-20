@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/upccup/july/bridge"
+	"github.com/upccup/july/db"
+	"github.com/upccup/july/ipamdriver"
+	"github.com/upccup/july/util"
+
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
-
-	"oam-docker-ipam/bridge"
-	"oam-docker-ipam/db"
-	"oam-docker-ipam/ipamdriver"
-	"oam-docker-ipam/util"
 )
 
 var (

@@ -4,10 +4,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"oam-docker-ipam/db"
-	"oam-docker-ipam/util"
 	"path/filepath"
 	"strings"
+
+	"github.com/upccup/july/db"
+	"github.com/upccup/july/util"
 
 	log "github.com/Sirupsen/logrus"
 )
