@@ -148,5 +148,6 @@ func NewCreateNetworkCommand() cli.Command {
 func createNetworkAction(c *cli.Context) {
 	db.SetDBAddr(c.GlobalString("cluster-store"))
 	ip := c.String("ip")
-	bridge.CreateNetwork(ip)
+	name := c.String("name")
+	bridge.CreateNetwork(ip, name)
 }

@@ -133,6 +133,7 @@ func CreateNetwork(ip, networkName string) {
 	if err = allocateHost(assigned_ip); err != nil {
 		log.Fatal(err)
 	}
+
 	if err = createBridge(assigned_ip, config.Subnet, config.Gateway, networkName); err != nil {
 		log.Fatal(err)
 	}
