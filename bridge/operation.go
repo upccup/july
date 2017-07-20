@@ -12,10 +12,10 @@ import (
 	log "github.com/Sirupsen/logrus"
 )
 
-func createBridge(ip, subnet, gateway string) error {
+func createBridge(ip, subnet, gateway, networkName string) error {
 	var err error = nil
 
-	if err := create_network(ip, subnet, gateway); err != nil {
+	if err := create_network(ip, subnet, gateway, networkName); err != nil {
 		return err
 	}
 	if err = configure_network(ip, subnet, gateway); err != nil {
