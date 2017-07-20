@@ -25,7 +25,7 @@ func createBridge(ip, subnet, gateway string) error {
 }
 
 //DefaultGatewayIPv4 is the ip of br0
-func create_network(ip, subnet, gateway string) error {
+func create_network(ip, subnet, gateway, networkName string) error {
 	command := "docker"
 	args := fmt.Sprint("network create ",
 		"--opt=com.docker.network.bridge.enable_icc=true ",
@@ -37,9 +37,9 @@ func create_network(ip, subnet, gateway string) error {
 		"--subnet=%s ",
 		"--gateway=%s ",
 		"--aux-address=DefaultGatewayIPv4=%s ",
-		"mynet")
+		"%s")
 
-	args = fmt.Sprintf(args, subnet, ip, gateway)
+	args = fmt.Sprintf(args, subnet, ip, gateway, networkName)
 
 	var out []byte
 	out, err := exec.Command(command, strings.Split(args, " ")...).CombinedOutput()
