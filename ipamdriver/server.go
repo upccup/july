@@ -39,21 +39,23 @@ func AllocateIPRange(ip_start, ip_end string) []string {
 		}
 		db.SetKey(filepath.Join(network_key_prefix, ip_net, "pool", ip), "")
 	}
+
 	initializeConfig(ip_net, mask)
-	fmt.Println("Allocate Containers IP Done! Total:", len(ips))
+	log.Info("Allocate Containers IP Done! Total:", len(ips))
 	return ips
 }
 
 func ReleaseIP(ip_net, ip string) error {
-	err := db.DeleteKey(filepath.Join(network_key_prefix, ip_net, "assigned", ip))
-	if err != nil {
+	if err := db.DeleteKey(filepath.Join(network_key_prefix, ip_net, "assigned", ip)); err != nil {
 		log.Infof("Skip Release IP %s", ip)
 		return nil
 	}
-	err = db.SetKey(filepath.Join(network_key_prefix, ip_net, "pool", ip), "")
-	if err == nil {
+
+	if err := db.SetKey(filepath.Join(network_key_prefix, ip_net, "pool", ip), ""); err != nil {
 		log.Infof("Release IP %s", ip)
+		return nil
 	}
+
 	return nil
 }
 
@@ -62,9 +64,11 @@ func AllocateIP(ip_net, ip string) (string, error) {
 	if err != nil {
 		return ip, err
 	}
+
 	if len(ip_pool) == 0 {
 		return ip, errors.New("Pool is empty")
 	}
+
 	if ip == "" {
 		find_ip := strings.Split(ip_pool[0].Key, "/")
 		ip = find_ip[len(find_ip)-1]
@@ -73,10 +77,10 @@ func AllocateIP(ip_net, ip string) (string, error) {
 	if exist == true {
 		return ip, errors.New(fmt.Sprintf("IP %s has been allocated", ip))
 	}
-	err = db.DeleteKey(filepath.Join(network_key_prefix, ip_net, "pool", ip))
-	if err != nil {
+	if err := db.DeleteKey(filepath.Join(network_key_prefix, ip_net, "pool", ip)); err != nil {
 		return ip, err
 	}
+
 	db.SetKey(filepath.Join(network_key_prefix, ip_net, "assigned", ip), "")
 	log.Infof("Allocated IP %s", ip)
 	return ip, err
