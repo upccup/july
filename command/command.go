@@ -140,6 +140,7 @@ func NewCreateNetworkCommand() cli.Command {
 		Usage: "create docker network br0",
 		Flags: []cli.Flag{
 			cli.StringFlag{Name: "ip", Usage: "the IP docker bridge use"},
+			cli.StringFlag{Name: "name", Usage: "the docker network name"},
 		},
 		Action: createNetworkAction,
 	}
