@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	network_key_prefix = "/talkingdata/containers"
+	network_key_prefix = "/jdjr/containers"
 )
 
 type Config struct {
@@ -26,7 +26,7 @@ type Config struct {
 func StartServer() {
 	d := &MyIPAMHandler{}
 	h := ipam.NewHandler(d)
-	h.ServeUnix("root", "talkingdata")
+	h.ServeUnix("root", "jdjr")
 }
 
 func AllocateIPRange(ip_start, ip_end string) []string {
@@ -87,10 +87,7 @@ func AllocateIP(ip_net, ip string) (string, error) {
 }
 
 func checkIPAssigned(ip_net, ip string) bool {
-	if exist := db.IsKeyExist(filepath.Join(network_key_prefix, ip_net, "assigned", ip)); exist {
-		return true
-	}
-	return false
+	return db.IsKeyExist(filepath.Join(network_key_prefix, ip_net, "assigned", ip))
 }
 
 func initializeConfig(ip_net, mask string) error {
