@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	network_key_prefix = "/talkingdata/hosts"
+	network_key_prefix = "/jdjr/hosts"
 )
 
 type Config struct {
