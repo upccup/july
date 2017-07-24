@@ -8,7 +8,6 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/docker/go-plugins-helpers/ipam"
-	netlabel "github.com/docker/libnetwork/netlabel"
 )
 
 type MyIPAMHandler struct {
@@ -48,13 +47,14 @@ func (iph *MyIPAMHandler) ReleasePool(request *ipam.ReleasePoolRequest) (err err
 }
 
 func (iph *MyIPAMHandler) RequestAddress(request *ipam.RequestAddressRequest) (response *ipam.RequestAddressResponse, err error) {
-	log.Infof("function RequestAddress paramv request: %#v", request)
+	log.Infof("function RequestAddress param request: %#v", request)
 	ip_net := request.PoolID
 	ip := request.Address
 	config, _ := GetConfig(ip_net)
 
-	if value, ok := request.Options["RequestAddressType"]; ok && value == netlabel.Gateway || len(request.Options) == 0 {
-		log.Infof("Skip allocate gateway ip %s", ip)
+	// TODO:(upccup) check is ip in the pool and legitimacy check
+	if ip != "" {
+		log.Infof("request ip: %s is not empty return it", ip)
 		return &ipam.RequestAddressResponse{fmt.Sprintf("%s/%s", ip, config.Mask), nil}, nil
 	}
 
