@@ -1,7 +1,6 @@
 package ipamdriver
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/upccup/july/util"
@@ -24,12 +23,7 @@ func (iph *MyIPAMHandler) GetDefaultAddressSpaces() (response *ipam.AddressSpace
 }
 
 func (iph *MyIPAMHandler) RequestPool(request *ipam.RequestPoolRequest) (response *ipam.RequestPoolResponse, err error) {
-	var request_json []byte = nil
-	request_json, err = json.Marshal(request)
-	if err != nil {
-		return nil, err
-	}
-	log.Infof("RequestPool: %s", request_json)
+	log.Infof("RequestPool: %#v", request)
 	ip_net, _ := util.GetIPNetAndMask(request.Pool)
 	_, ip_cidr := util.GetIPAndCIDR(request.Pool)
 	options := request.Options
@@ -37,12 +31,7 @@ func (iph *MyIPAMHandler) RequestPool(request *ipam.RequestPoolRequest) (respons
 }
 
 func (iph *MyIPAMHandler) ReleasePool(request *ipam.ReleasePoolRequest) (err error) {
-	var request_json []byte = nil
-	request_json, err = json.Marshal(request)
-	if err != nil {
-		return err
-	}
-	log.Infof("ReleasePool %s is danger, you should do this by manual.", request_json)
+	log.Infof("ReleasePool %#v is danger, you should do this by manual.", request)
 	return nil
 }
 
@@ -63,12 +52,6 @@ func (iph *MyIPAMHandler) RequestAddress(request *ipam.RequestAddressRequest) (r
 }
 
 func (iph *MyIPAMHandler) ReleaseAddress(request *ipam.ReleaseAddressRequest) (err error) {
-	var request_json []byte = nil
-	request_json, err = json.Marshal(request)
-	if err != nil {
-		return err
-	}
-
-	log.Infof("ReleaseAddress %s", request_json)
+	log.Infof("function ReleaseAddress param request: %#v", request)
 	return ReleaseIP(request.PoolID, request.Address)
 }
