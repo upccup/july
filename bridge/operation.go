@@ -33,7 +33,7 @@ func create_network(ip, subnet, gateway, networkName string) error {
 		"--opt=com.docker.network.bridge.host_binding_ipv4=0.0.0.0 ",
 		"--opt=com.docker.network.bridge.name=br0 ",
 		"--opt=com.docker.network.driver.mtu=1500 ",
-		"--ipam-driver=talkingdata ",
+		"--ipam-driver=jdjr ",
 		"--subnet=%s ",
 		"--gateway=%s ",
 		"--aux-address=DefaultGatewayIPv4=%s ",
