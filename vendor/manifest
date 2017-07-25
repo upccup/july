@@ -10,20 +10,262 @@
 			"notests": true
 		},
 		{
+			"importpath": "github.com/docker/docker/api/types",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "api/types",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/docker/docker/opts",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "/opts",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/docker/docker/pkg/homedir",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "pkg/homedir",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/docker/docker/pkg/idtools",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "pkg/idtools",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/docker/docker/pkg/jsonlog",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "pkg/jsonlog",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/docker/docker/pkg/jsonmessage",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "pkg/jsonmessage",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/docker/docker/pkg/mount",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "pkg/mount",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/docker/docker/pkg/progress",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "pkg/progress",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/docker/docker/pkg/stdcopy",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "pkg/stdcopy",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/docker/docker/pkg/streamformatter",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "pkg/streamformatter",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/docker/docker/pkg/system",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "pkg/system",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/docker/docker/pkg/term",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "pkg/term",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/docker/docker/vendor/github.com/Azure/go-ansiterm",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "vendor/github.com/Azure/go-ansiterm",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/docker/docker/vendor/github.com/Microsoft/go-winio",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "vendor/github.com/Microsoft/go-winio",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/docker/docker/vendor/github.com/Nvveen/Gotty",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "vendor/github.com/Nvveen/Gotty",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/docker/docker/vendor/github.com/Sirupsen/logrus",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "vendor/github.com/Sirupsen/logrus",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/docker/docker/vendor/github.com/docker/go-connections/nat",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "vendor/github.com/docker/go-connections/nat",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/docker/docker/vendor/github.com/docker/go-units",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "vendor/github.com/docker/go-units",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/docker/docker/vendor/github.com/gogo/protobuf/proto",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "vendor/github.com/gogo/protobuf/proto",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/docker/docker/vendor/github.com/opencontainers/go-digest",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "vendor/github.com/opencontainers/go-digest",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/docker/docker/vendor/github.com/opencontainers/image-spec/specs-go",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "vendor/github.com/opencontainers/image-spec/specs-go",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/docker/docker/vendor/github.com/opencontainers/runc/libcontainer/user",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "vendor/github.com/opencontainers/runc/libcontainer/user",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/docker/docker/vendor/github.com/pkg/errors",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "vendor/github.com/pkg/errors",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/docker/docker/vendor/golang.org/x/net/context",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "vendor/golang.org/x/net/context",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/docker/docker/vendor/golang.org/x/sys/unix",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "vendor/golang.org/x/sys/unix",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/docker/docker/vendor/golang.org/x/sys/windows",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "vendor/golang.org/x/sys/windows",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/docker/docker/vendor/golang.org/x/time/rate",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "vendor/golang.org/x/time/rate",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/docker/go-units",
+			"repository": "https://github.com/docker/go-units",
+			"vcs": "git",
+			"revision": "0dadbb0345b35ec7ef35e228dabb8de89a65bf52",
+			"branch": "master",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/fsouza/go-dockerclient",
 			"repository": "https://github.com/fsouza/go-dockerclient",
 			"vcs": "git",
 			"revision": "4df4873b288c855e4186534280c3a3a1af403e67",
 			"branch": "master",
-			"notests": true
-		},
-		{
-			"importpath": "golang.org/x/net/context",
-			"repository": "https://go.googlesource.com/net",
-			"vcs": "git",
-			"revision": "ab5485076ff3407ad2d02db054635913f017b0ed",
-			"branch": "master",
-			"path": "/context",
 			"notests": true
 		}
 	]
