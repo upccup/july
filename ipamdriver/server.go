@@ -73,10 +73,11 @@ func AllocateIP(ip_net, ip string) (string, error) {
 		find_ip := strings.Split(ip_pool[0].Key, "/")
 		ip = find_ip[len(find_ip)-1]
 	}
-	exist := checkIPAssigned(ip_net, ip)
-	if exist == true {
+
+	if checkIPAssigned(ip_net, ip) {
 		return ip, errors.New(fmt.Sprintf("IP %s has been allocated", ip))
 	}
+
 	if err := db.DeleteKey(filepath.Join(network_key_prefix, ip_net, "pool", ip)); err != nil {
 		return ip, err
 	}
@@ -96,11 +97,13 @@ func initializeConfig(ip_net, mask string) error {
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = db.SetKey(filepath.Join(network_key_prefix, ip_net, "config"), string(config_bytes))
-	if err == nil {
-		log.Infof("Initialized Config %s for network %s", string(config_bytes), ip_net)
+
+	if err := db.SetKey(filepath.Join(network_key_prefix, ip_net, "config"), string(config_bytes)); err != nil {
+		log.Fatal(err)
 	}
-	return err
+
+	log.Infof("Initialized Config %s for network %s", string(config_bytes), ip_net)
+	return nil
 }
 
 func DeleteNetWork(ip_net string) error {
