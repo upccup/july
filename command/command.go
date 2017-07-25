@@ -6,12 +6,12 @@ import (
 
 	"github.com/upccup/july/bridge"
 	"github.com/upccup/july/db"
+	docker "github.com/upccup/july/docker-client"
 	"github.com/upccup/july/ipamdriver"
 	"github.com/upccup/july/util"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
-	docker "github.com/fsouza/go-dockerclient"
 )
 
 var (
