@@ -25,6 +25,7 @@ func main() {
 		command.NewHostRangeCommand(),
 		command.NewReleaseHostCommand(),
 		command.NewCreateNetworkCommand(),
+		command.NewDockerAgentCommand(),
 	}
 	app.Run(os.Args)
 }
