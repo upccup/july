@@ -253,6 +253,15 @@
 			"notests": true
 		},
 		{
+			"importpath": "github.com/docker/go-connections/nat",
+			"repository": "https://github.com/docker/go-connections",
+			"vcs": "git",
+			"revision": "3ede32e2033de7505e6500d6c868c2b9ed9f169d",
+			"branch": "master",
+			"path": "/nat",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/docker/go-units",
 			"repository": "https://github.com/docker/go-units",
 			"vcs": "git",
@@ -266,6 +275,24 @@
 			"vcs": "git",
 			"revision": "4df4873b288c855e4186534280c3a3a1af403e67",
 			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/opencontainers/runc/libcontainer/system",
+			"repository": "https://github.com/opencontainers/runc",
+			"vcs": "git",
+			"revision": "6ca8b741bb67839b7170d96257dde5c246f8b784",
+			"branch": "master",
+			"path": "/libcontainer/system",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/opencontainers/runc/vendor/golang.org/x/sys/unix",
+			"repository": "https://github.com/opencontainers/runc",
+			"vcs": "git",
+			"revision": "6ca8b741bb67839b7170d96257dde5c246f8b784",
+			"branch": "master",
+			"path": "vendor/golang.org/x/sys/unix",
 			"notests": true
 		}
 	]
