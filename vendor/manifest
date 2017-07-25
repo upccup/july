@@ -28,6 +28,24 @@
 			"notests": true
 		},
 		{
+			"importpath": "github.com/docker/docker/pkg/archive",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "/pkg/archive",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/docker/docker/pkg/fileutils",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "pkg/fileutils",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/docker/docker/pkg/homedir",
 			"repository": "https://github.com/docker/docker",
 			"vcs": "git",
@@ -43,6 +61,15 @@
 			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
 			"branch": "master",
 			"path": "pkg/idtools",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/docker/docker/pkg/ioutils",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "pkg/ioutils",
 			"notests": true
 		},
 		{
@@ -64,6 +91,15 @@
 			"notests": true
 		},
 		{
+			"importpath": "github.com/docker/docker/pkg/longpath",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "pkg/longpath",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/docker/docker/pkg/mount",
 			"repository": "https://github.com/docker/docker",
 			"vcs": "git",
@@ -73,12 +109,30 @@
 			"notests": true
 		},
 		{
+			"importpath": "github.com/docker/docker/pkg/pools",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "/pkg/pools",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/docker/docker/pkg/progress",
 			"repository": "https://github.com/docker/docker",
 			"vcs": "git",
 			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
 			"branch": "master",
 			"path": "pkg/progress",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/docker/docker/pkg/promise",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "pkg/promise",
 			"notests": true
 		},
 		{
@@ -115,6 +169,15 @@
 			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
 			"branch": "master",
 			"path": "pkg/term",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/docker/docker/vendor/archive/tar",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "vendor/archive/tar",
 			"notests": true
 		},
 		{
@@ -199,6 +262,15 @@
 			"notests": true
 		},
 		{
+			"importpath": "github.com/docker/docker/vendor/github.com/opencontainers/runc/libcontainer/system",
+			"repository": "https://github.com/docker/docker",
+			"vcs": "git",
+			"revision": "92b3dcb601381348c12ad7f99e865991bf908eea",
+			"branch": "master",
+			"path": "vendor/github.com/opencontainers/runc/libcontainer/system",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/docker/docker/vendor/github.com/opencontainers/runc/libcontainer/user",
 			"repository": "https://github.com/docker/docker",
 			"vcs": "git",
@@ -270,14 +342,6 @@
 			"notests": true
 		},
 		{
-			"importpath": "github.com/fsouza/go-dockerclient",
-			"repository": "https://github.com/fsouza/go-dockerclient",
-			"vcs": "git",
-			"revision": "4df4873b288c855e4186534280c3a3a1af403e67",
-			"branch": "master",
-			"notests": true
-		},
-		{
 			"importpath": "github.com/opencontainers/go-digest",
 			"repository": "https://github.com/opencontainers/go-digest",
 			"vcs": "git",
@@ -301,15 +365,6 @@
 			"revision": "6ca8b741bb67839b7170d96257dde5c246f8b784",
 			"branch": "master",
 			"path": "/libcontainer/system",
-			"notests": true
-		},
-		{
-			"importpath": "github.com/opencontainers/runc/vendor/golang.org/x/sys/unix",
-			"repository": "https://github.com/opencontainers/runc",
-			"vcs": "git",
-			"revision": "6ca8b741bb67839b7170d96257dde5c246f8b784",
-			"branch": "master",
-			"path": "vendor/golang.org/x/sys/unix",
 			"notests": true
 		}
 	]
