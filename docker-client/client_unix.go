@@ -9,9 +9,6 @@ package docker
 import (
 	"net"
 	"net/http"
-
-	// "golang.org/x/net/context"
-	"context"
 )
 
 // initializeNativeClient initializes the native Unix domain socket client on
@@ -23,9 +20,6 @@ func (c *Client) initializeNativeClient() {
 	socketPath := c.endpointURL.Path
 	tr := DefaultTransport()
 	tr.Dial = func(network, addr string) (net.Conn, error) {
-		return c.Dialer.Dial(network, addr)
-	}
-	tr.DialContext = func(ctx context.Context, network, addr string) (net.Conn, error) {
 		return c.Dialer.Dial(unixProtocol, socketPath)
 	}
 	c.nativeHTTPClient = &http.Client{Transport: tr}
