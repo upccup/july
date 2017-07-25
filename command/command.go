@@ -11,6 +11,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
+	docker "github.com/fsouza/go-dockerclient"
 )
 
 var (
@@ -39,6 +40,37 @@ func startServerAction(c *cli.Context) {
 	db.SetDBAddr(c.GlobalString("cluster-store"))
 	initialize_log()
 	ipamdriver.StartServer()
+}
+
+func NewDockerAgentCommand() cli.Command {
+	return cli.Command{
+		Name:   "agent",
+		Usage:  "start an agent listen docker event",
+		Action: startListenDockerAction,
+	}
+}
+
+func startListenDockerAction(c *cli.Context) {
+	client, err := docker.NewVersionedClient("tcp://172.25.60.39:8091", "1.21")
+	if err != nil {
+		log.Fatalf("create docker client got error: %+v", err)
+		return
+	}
+
+	eventsChan := make(chan *docker.APIEvents)
+	if err := client.AddEventListener(eventsChan); err != nil {
+		log.Fatalf("create docker client got error: %+v", err)
+	}
+
+	log.Info("add docker event listener success")
+
+	for {
+		select {
+		case e := <-eventsChan:
+			log.Infof("got docker event: %#v", e)
+		}
+	}
+
 }
 
 func NewIPRangeCommand() cli.Command {

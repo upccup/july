@@ -13,15 +13,11 @@ import (
 )
 
 func createBridge(ip, subnet, gateway, networkName string) error {
-	var err error = nil
-
 	if err := create_network(ip, subnet, gateway, networkName); err != nil {
 		return err
 	}
-	if err = configure_network(ip, subnet, gateway); err != nil {
-		return err
-	}
-	return err
+
+	return configure_network(ip, subnet, gateway)
 }
 
 //DefaultGatewayIPv4 is the ip of br0
