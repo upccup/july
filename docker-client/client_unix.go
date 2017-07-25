@@ -7,11 +7,11 @@
 package docker
 
 import (
-	"context"
 	"net"
 	"net/http"
 
 	"github.com/hashicorp/go-cleanhttp"
+	"golang.org/x/net/context"
 )
 
 // initializeNativeClient initializes the native Unix domain socket client on
