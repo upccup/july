@@ -278,6 +278,23 @@
 			"notests": true
 		},
 		{
+			"importpath": "github.com/opencontainers/go-digest",
+			"repository": "https://github.com/opencontainers/go-digest",
+			"vcs": "git",
+			"revision": "279bed98673dd5bef374d3b6e4b09e2af76183bf",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/opencontainers/image-spec/specs-go",
+			"repository": "https://github.com/opencontainers/image-spec",
+			"vcs": "git",
+			"revision": "ef2b9a1d696677abd664a0879758d2b115b1ded3",
+			"branch": "master",
+			"path": "specs-go",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/opencontainers/runc/libcontainer/system",
 			"repository": "https://github.com/opencontainers/runc",
 			"vcs": "git",
