@@ -6,7 +6,8 @@ import (
 
 	"github.com/upccup/july/bridge"
 	"github.com/upccup/july/db"
-	docker "github.com/upccup/july/docker-client"
+	dns "github.com/upccup/july/dns-handler"
+	event "github.com/upccup/july/docker-event"
 	"github.com/upccup/july/ipamdriver"
 	"github.com/upccup/july/util"
 
@@ -51,26 +52,12 @@ func NewDockerAgentCommand() cli.Command {
 }
 
 func startListenDockerAction(c *cli.Context) {
-	client, err := docker.NewVersionedClient("tcp://172.25.60.39:8091", "1.21")
-	if err != nil {
-		log.Fatalf("create docker client got error: %+v", err)
-		return
+	dockerEvenListener := &event.DockerListener{
+		Endpoint:   "tcp://172.25.60.39:8092",
+		APIVersion: "1.21",
+		DNSClient:  &dns.DNSClient{Endpoint: "http://dns2-test.cbpmgt.com/api/domain_add"},
 	}
-
-	eventsChan := make(chan *docker.APIEvents)
-	if err := client.AddEventListener(eventsChan); err != nil {
-		log.Fatalf("create docker client got error: %+v", err)
-	}
-
-	log.Info("add docker event listener success")
-
-	for {
-		select {
-		case e := <-eventsChan:
-			log.Infof("got docker event: %#v", e)
-		}
-	}
-
+	dockerEvenListener.StartListenDockerAction("tcp://172.25.60.39:8092", "1.21")
 }
 
 func NewIPRangeCommand() cli.Command {
