@@ -53,7 +53,7 @@ func NewDockerAgentCommand() cli.Command {
 }
 
 func startListenDockerAction(c *cli.Context) {
-	client, err := docker.NewVersionedClient("tcp://172.25.60.39:8092", "1.21")
+	client, err := docker.NewVersionedClient(c.GlobalString("docker-endpoint"), "1.21")
 	if err != nil {
 		log.Fatalf("create docker client got error: %+v", err)
 		return
@@ -63,7 +63,7 @@ func startListenDockerAction(c *cli.Context) {
 		DockerClient: client,
 		DNSClient:    &dns.DNSClient{Endpoint: "http://dns2-test.cbpmgt.com/api/domain_add"},
 	}
-	dockerEvenListener.StartListenDockerAction("tcp://172.25.60.39:8092", "1.21")
+	dockerEvenListener.StartListenDockerAction()
 }
 
 func NewIPRangeCommand() cli.Command {

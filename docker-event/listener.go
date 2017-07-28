@@ -30,7 +30,7 @@ type ContainerIPInfo struct {
 	Labels map[string]string
 }
 
-func (listener *DockerListener) StartListenDockerAction(addr, version string) {
+func (listener *DockerListener) StartListenDockerAction() {
 	eventsChan := make(chan *docker.APIEvents, 10)
 	if err := listener.DockerClient.AddEventListener(eventsChan); err != nil {
 		log.Fatalf("create docker client got error: %+v", err)
