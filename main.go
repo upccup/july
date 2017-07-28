@@ -10,13 +10,14 @@ import (
 
 func main() {
 	app := cli.NewApp()
-	app.Name = "oam-docker-ipam"
+	app.Name = "july"
 	app.Version = "1.0.0"
-	app.Author = "chao.ma"
-	app.Usage = "TalkingData network plugin with remote IPAM"
+	app.Author = "upccup"
+	app.Usage = "docker network plugin with remote IPAM & event listener"
 	app.Flags = []cli.Flag{
 		cli.StringFlag{Name: "cluster-store", Value: "http://127.0.0.1:2379", Usage: "the key/value store endpoint url. [$CLUSTER_STORE]"},
 		cli.BoolFlag{Name: "debug", Usage: "debug mode [$DEBUG]"},
+		cli.StringFlag{Name: "docker-endpoint", Value: "tcp://127.0.0.1:2376", Usage: "the docker daemon endpoint. [$DOCKER_ENDPOINT]"},
 	}
 	app.Commands = []cli.Command{
 		command.NewServerCommand(),
