@@ -19,7 +19,8 @@ type DNSClient struct {
 }
 
 const (
-	DNSPassword = "abcc"
+	DNSPassword     = "abcc"
+	AddDNSRecordURL = "http://dns2-test.cbpmgt.com/api/domain_add"
 )
 
 type DNSRecord struct {
