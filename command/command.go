@@ -59,6 +59,11 @@ func startListenDockerAction(c *cli.Context) {
 		return
 	}
 
+	if err := client.Ping(); err != nil {
+		log.Fatalf("connect to docker client got error: %+v", err)
+		return
+	}
+
 	dockerEvenListener := &event.DockerListener{
 		DockerClient: client,
 		DNSClient:    &dns.DNSClient{Endpoint: "http://dns2-test.cbpmgt.com/api/domain_add"},
