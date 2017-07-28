@@ -52,7 +52,13 @@ func NewDockerAgentCommand() cli.Command {
 			cli.StringFlag{
 				Name:  "docker-endpoint",
 				Value: "tcp://127.0.0.1:2376",
-				Usage: "the docker daemon endpoint. [$DOCKER_ENDPOINT]"},
+				Usage: "the docker daemon endpoint. [$DOCKER_ENDPOINT]",
+			},
+			cli.StringFlag{
+				Name:  "dns-endpoint",
+				Value: "http://127.0.0.1:9999",
+				Usage: "the dns console server endpoint. [$DNS_ENDPOINT]",
+			},
 		},
 		Action: startListenDockerAction,
 	}
@@ -74,9 +80,10 @@ func startListenDockerAction(c *cli.Context) {
 		return
 	}
 
+	log.Debug("docker endpoint: ", c.String("dns-endpoint"))
 	dockerEvenListener := &event.DockerListener{
 		DockerClient: client,
-		DNSClient:    &dns.DNSClient{Endpoint: "http://dns2-test.cbpmgt.com/api/domain_add"},
+		DNSClient:    &dns.DNSClient{Endpoint: c.String("dns-endpoint")},
 	}
 	dockerEvenListener.StartListenDockerAction()
 }

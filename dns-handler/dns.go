@@ -20,7 +20,7 @@ type DNSClient struct {
 
 const (
 	DNSPassword     = "abcc"
-	AddDNSRecordURL = "http://dns2-test.cbpmgt.com/api/domain_add"
+	AddDNSRecordURL = "%s/api/domain_add"
 )
 
 type DNSRecord struct {
@@ -58,7 +58,8 @@ func (dClient *DNSClient) AddDNSRecord(domain, address string) error {
 		return err
 	}
 
-	req, err := http.NewRequest("POST", dClient.Endpoint, body)
+	addEndpoint := fmt.Sprintf(AddDNSRecordURL, dClient.Endpoint)
+	req, err := http.NewRequest("POST", addEndpoint, body)
 	if err != nil {
 		return err
 	}
