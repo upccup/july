@@ -46,14 +46,24 @@ func startServerAction(c *cli.Context) {
 
 func NewDockerAgentCommand() cli.Command {
 	return cli.Command{
-		Name:   "agent",
-		Usage:  "start an agent listen docker event",
+		Name:  "agent",
+		Usage: "start an agent listen docker event",
+		Flags: []cli.Flag{
+			cli.StringFlag{
+				Name:  "docker-endpoint",
+				Value: "tcp://127.0.0.1:2376",
+				Usage: "the docker daemon endpoint. [$DOCKER_ENDPOINT]"},
+		},
 		Action: startListenDockerAction,
 	}
 }
 
 func startListenDockerAction(c *cli.Context) {
-	client, err := docker.NewVersionedClient(c.GlobalString("docker-endpoint"), "1.21")
+	debug = c.GlobalBool("debug")
+	initialize_log()
+
+	log.Debug("docker endpoint: ", c.String("docker-endpoint"))
+	client, err := docker.NewVersionedClient(c.String("docker-endpoint"), "1.21")
 	if err != nil {
 		log.Fatalf("create docker client got error: %+v", err)
 		return
