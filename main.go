@@ -17,7 +17,6 @@ func main() {
 	app.Flags = []cli.Flag{
 		cli.StringFlag{Name: "cluster-store", Value: "http://127.0.0.1:2379", Usage: "the key/value store endpoint url. [$CLUSTER_STORE]"},
 		cli.BoolFlag{Name: "debug", Usage: "debug mode [$DEBUG]"},
-		cli.StringFlag{Name: "docker-endpoint", Value: "tcp://127.0.0.1:2376", Usage: "the docker daemon endpoint. [$DOCKER_ENDPOINT]"},
 	}
 	app.Commands = []cli.Command{
 		command.NewServerCommand(),
