@@ -7,15 +7,12 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/upccup/july/config"
 	"github.com/upccup/july/db"
 	"github.com/upccup/july/util"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/docker/go-plugins-helpers/ipam"
-)
-
-const (
-	network_key_prefix = "/jdjr/containers"
 )
 
 type Config struct {
@@ -37,7 +34,7 @@ func AllocateIPRange(ip_start, ip_end string) []string {
 			log.Warnf("IP %s has been allocated", ip)
 			continue
 		}
-		db.SetKey(filepath.Join(network_key_prefix, ip_net, "pool", ip), "")
+		db.SetKey(filepath.Join(config.ContainerIPStorePrefix, ip_net, "pool", ip), "")
 	}
 
 	initializeConfig(ip_net, mask)
@@ -46,12 +43,12 @@ func AllocateIPRange(ip_start, ip_end string) []string {
 }
 
 func ReleaseIP(ip_net, ip string) error {
-	if err := db.DeleteKey(filepath.Join(network_key_prefix, ip_net, "assigned", ip)); err != nil {
+	if err := db.DeleteKey(filepath.Join(config.ContainerIPStorePrefix, ip_net, "assigned", ip)); err != nil {
 		log.Infof("Skip Release IP %s", ip)
 		return nil
 	}
 
-	if err := db.SetKey(filepath.Join(network_key_prefix, ip_net, "pool", ip), ""); err != nil {
+	if err := db.SetKey(filepath.Join(config.ContainerIPStorePrefix, ip_net, "pool", ip), ""); err != nil {
 		log.Infof("Release IP %s", ip)
 		return nil
 	}
@@ -60,7 +57,7 @@ func ReleaseIP(ip_net, ip string) error {
 }
 
 func AllocateIP(ip_net, ip string) (string, error) {
-	ip_pool, err := db.GetKeys(filepath.Join(network_key_prefix, ip_net, "pool"))
+	ip_pool, err := db.GetKeys(filepath.Join(config.ContainerIPStorePrefix, ip_net, "pool"))
 	if err != nil {
 		return ip, err
 	}
@@ -78,27 +75,27 @@ func AllocateIP(ip_net, ip string) (string, error) {
 		return ip, errors.New(fmt.Sprintf("IP %s has been allocated", ip))
 	}
 
-	if err := db.DeleteKey(filepath.Join(network_key_prefix, ip_net, "pool", ip)); err != nil {
+	if err := db.DeleteKey(filepath.Join(config.ContainerIPStorePrefix, ip_net, "pool", ip)); err != nil {
 		return ip, err
 	}
 
-	db.SetKey(filepath.Join(network_key_prefix, ip_net, "assigned", ip), "")
+	db.SetKey(filepath.Join(config.ContainerIPStorePrefix, ip_net, "assigned", ip), "")
 	log.Infof("Allocated IP %s", ip)
 	return ip, err
 }
 
 func checkIPAssigned(ip_net, ip string) bool {
-	return db.IsKeyExist(filepath.Join(network_key_prefix, ip_net, "assigned", ip))
+	return db.IsKeyExist(filepath.Join(config.ContainerIPStorePrefix, ip_net, "assigned", ip))
 }
 
 func initializeConfig(ip_net, mask string) error {
-	config := &Config{Ipnet: ip_net, Mask: mask}
-	config_bytes, err := json.Marshal(config)
+	ipConfig := &Config{Ipnet: ip_net, Mask: mask}
+	config_bytes, err := json.Marshal(ipConfig)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	if err := db.SetKey(filepath.Join(network_key_prefix, ip_net, "config"), string(config_bytes)); err != nil {
+	if err := db.SetKey(filepath.Join(config.ContainerIPStorePrefix, ip_net, "config"), string(config_bytes)); err != nil {
 		log.Fatal(err)
 	}
 
@@ -107,7 +104,7 @@ func initializeConfig(ip_net, mask string) error {
 }
 
 func DeleteNetWork(ip_net string) error {
-	err := db.DeleteKey(filepath.Join(network_key_prefix, ip_net))
+	err := db.DeleteKey(filepath.Join(config.ContainerIPStorePrefix, ip_net))
 	if err == nil {
 		log.Infof("DeleteNetwork %s", ip_net)
 	}
@@ -115,7 +112,7 @@ func DeleteNetWork(ip_net string) error {
 }
 
 func GetConfig(ip_net string) (*Config, error) {
-	config, err := db.GetKey(filepath.Join(network_key_prefix, ip_net, "config"))
+	config, err := db.GetKey(filepath.Join(config.ContainerIPStorePrefix, ip_net, "config"))
 	if err == nil {
 		log.Debugf("GetConfig %s from network %s", config, ip_net)
 	}
