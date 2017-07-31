@@ -14,7 +14,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 )
 
-type Config struct {
+type IPConfig struct {
 	Subnet  string
 	Gateway string
 }
@@ -27,7 +27,7 @@ func AllocateHostRange(ip_start, ip_end, gateway string) []string {
 			log.Warnf("IP %s has been allocated", ip)
 			continue
 		}
-		db.SetKey(filepath.Join(config.HostIPStorePrefix, "pool", ip), "")
+		db.SetKey(filepath.Join(config.HostIPPoolStorePath, ip), "")
 	}
 	initializeConfig(ip_net, fmt.Sprint(ip_net, "/", mask), gateway)
 	fmt.Println("Allocate Hosts Done! Total:", len(ips))
@@ -35,23 +35,24 @@ func AllocateHostRange(ip_start, ip_end, gateway string) []string {
 }
 
 func initializeConfig(ip_net, subnet, gateway string) error {
-	ipConfig := &Config{Subnet: subnet, Gateway: gateway}
+	ipConfig := &IPConfig{Subnet: subnet, Gateway: gateway}
 	config_bytes, _ := json.Marshal(ipConfig)
-	err := db.SetKey(filepath.Join(config.HostIPStorePrefix, "config"), string(config_bytes))
-	if err == nil {
-		log.Infof("Initialized Config %s for network %s", string(config_bytes), ip_net)
+	if err := db.SetKey(config.HostIPConfigStorePath, string(config_bytes)); err != nil {
+		return err
 	}
-	return err
+
+	log.Infof("Initialized Config %s for network %s success", string(config_bytes), ip_net)
+	return nil
 }
 
-func getConfig() (*Config, error) {
-	config, err := db.GetKey(filepath.Join(config.HostIPStorePrefix, "config"))
+func getConfig() (*IPConfig, error) {
+	config, err := db.GetKey(config.HostIPConfigStorePath)
 	if err != nil {
 		return nil, err
 	}
 
 	log.Debugf("getConfig %s", config)
-	conf := &Config{}
+	conf := &IPConfig{}
 	json.Unmarshal([]byte(config), conf)
 	return conf, err
 }
@@ -61,11 +62,11 @@ func allocateHost(ip string) error {
 		return errors.New("arg ip is lack")
 	}
 
-	if err := db.DeleteKey(filepath.Join(config.HostIPStorePrefix, "pool", ip)); err != nil {
+	if err := db.DeleteKey(filepath.Join(config.HostIPPoolStorePath, ip)); err != nil {
 		return err
 	}
 
-	if err := db.SetKey(filepath.Join(config.HostIPStorePrefix, "assigned", ip), ""); err != nil {
+	if err := db.SetKey(filepath.Join(config.HostAssignedIPStorePath, ip), ""); err != nil {
 		return err
 	}
 
@@ -74,7 +75,7 @@ func allocateHost(ip string) error {
 }
 
 func getHost(ip string) (string, error) {
-	ip_pool, err := db.GetKeys(filepath.Join(config.HostIPStorePrefix, "pool"))
+	ip_pool, err := db.GetKeys(config.HostIPPoolStorePath)
 	if err != nil {
 		return "", err
 	}
@@ -86,7 +87,7 @@ func getHost(ip string) (string, error) {
 	if ip == "" {
 		find_ip := strings.Split(ip_pool[0].Key, "/")
 		ip = find_ip[len(find_ip)-1]
-	} else if !db.IsKeyExist(filepath.Join(config.HostIPStorePrefix, "pool", ip)) {
+	} else if !db.IsKeyExist(filepath.Join(config.HostIPPoolStorePath, ip)) {
 		return "", errors.New(fmt.Sprintf("Host %s not in pool", ip))
 	}
 
@@ -99,15 +100,15 @@ func getHost(ip string) (string, error) {
 }
 
 func checkIPAssigned(ip string) bool {
-	return db.IsKeyExist(filepath.Join(config.HostIPStorePrefix, "assigned", ip))
+	return db.IsKeyExist(filepath.Join(config.HostAssignedIPStorePath, ip))
 }
 
 func ReleaseHost(ip string) error {
-	if err := db.DeleteKey(filepath.Join(config.HostIPStorePrefix, "assigned", ip)); err != nil {
+	if err := db.DeleteKey(filepath.Join(config.HostAssignedIPStorePath, ip)); err != nil {
 		log.Fatal(err)
 	}
 
-	if err := db.SetKey(filepath.Join(config.HostIPStorePrefix, "pool", ip), ""); err != nil {
+	if err := db.SetKey(filepath.Join(config.HostIPPoolStorePath, ip), ""); err != nil {
 		log.Fatal(err)
 	}
 
@@ -117,7 +118,7 @@ func ReleaseHost(ip string) error {
 
 func CreateNetwork(ip, networkName string) {
 	var assigned_ip string
-	var config *Config
+	var config *IPConfig
 	var err error
 
 	if config, err = getConfig(); err != nil {

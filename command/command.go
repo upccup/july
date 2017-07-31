@@ -2,10 +2,9 @@ package command
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/upccup/july/bridge"
-	"github.com/upccup/july/db"
+	//"github.com/upccup/july/db"
 	dns "github.com/upccup/july/dns-handler"
 	docker "github.com/upccup/july/docker-client"
 	event "github.com/upccup/july/docker-event"
@@ -15,19 +14,6 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
 )
-
-var (
-	debug bool
-)
-
-func initialize_log() {
-	log.SetOutput(os.Stderr)
-	if debug {
-		log.SetLevel(log.DebugLevel)
-	} else {
-		log.SetLevel(log.InfoLevel)
-	}
-}
 
 func NewServerCommand() cli.Command {
 	return cli.Command{
@@ -50,12 +36,6 @@ func NewServerCommand() cli.Command {
 }
 
 func startServerAction(c *cli.Context) {
-	debug = c.GlobalBool("debug")
-	initialize_log()
-
-	log.Info("cluster-store endpoint: ", c.GlobalString("cluster-store"))
-	db.SetDBAddr(c.GlobalString("cluster-store"))
-
 	// start ipam server
 	go ipamdriver.StartServer()
 
@@ -92,7 +72,6 @@ func NewIPRangeCommand() cli.Command {
 }
 
 func ipRangeAction(c *cli.Context) {
-	db.SetDBAddr(c.GlobalString("cluster-store"))
 	ip_start := c.String("ip-start")
 	ip_end := c.String("ip-end")
 	if ip_start == "" || ip_end == "" {
@@ -114,7 +93,6 @@ func NewReleaseIPCommand() cli.Command {
 }
 
 func releaseIPAction(c *cli.Context) {
-	db.SetDBAddr(c.GlobalString("cluster-store"))
 	ip_args := c.String("ip")
 	if ip_args == "" {
 		fmt.Println("Invalid args")
@@ -137,7 +115,6 @@ func NewReleaseHostCommand() cli.Command {
 }
 
 func releaseHostAction(c *cli.Context) {
-	db.SetDBAddr(c.GlobalString("cluster-store"))
 	ip := c.String("ip")
 	if ip == "" {
 		fmt.Println("Invalid args")
@@ -161,7 +138,6 @@ func NewHostRangeCommand() cli.Command {
 }
 
 func hostRangeAction(c *cli.Context) {
-	db.SetDBAddr(c.GlobalString("cluster-store"))
 	ip_start := c.String("ip-start")
 	ip_end := c.String("ip-end")
 	gateway := c.String("gateway")
@@ -185,8 +161,18 @@ func NewCreateNetworkCommand() cli.Command {
 }
 
 func createNetworkAction(c *cli.Context) {
-	db.SetDBAddr(c.GlobalString("cluster-store"))
 	ip := c.String("ip")
 	name := c.String("name")
 	bridge.CreateNetwork(ip, name)
+}
+
+func NewShowAssignedIPCommand() cli.Command {
+	return cli.Command{
+		Name:   "ip-assigned",
+		Usage:  "show the which has been assigned",
+		Action: showAssignedIPAction,
+	}
+}
+
+func showAssignedIPAction(c *cli.Context) {
 }
