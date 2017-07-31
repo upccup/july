@@ -31,23 +31,8 @@ func initialize_log() {
 
 func NewServerCommand() cli.Command {
 	return cli.Command{
-		Name:   "server",
-		Usage:  "start the TalkingData IPAM plugin",
-		Action: startServerAction,
-	}
-}
-
-func startServerAction(c *cli.Context) {
-	debug = c.GlobalBool("debug")
-	db.SetDBAddr(c.GlobalString("cluster-store"))
-	initialize_log()
-	ipamdriver.StartServer()
-}
-
-func NewDockerAgentCommand() cli.Command {
-	return cli.Command{
-		Name:  "agent",
-		Usage: "start an agent listen docker event",
+		Name:  "server",
+		Usage: "start the IPAM plugin server& add docker event listener",
 		Flags: []cli.Flag{
 			cli.StringFlag{
 				Name:  "docker-endpoint",
@@ -60,13 +45,19 @@ func NewDockerAgentCommand() cli.Command {
 				Usage: "the dns console server endpoint. [$DNS_ENDPOINT]",
 			},
 		},
-		Action: startListenDockerAction,
+		Action: startServerAction,
 	}
 }
 
-func startListenDockerAction(c *cli.Context) {
+func startServerAction(c *cli.Context) {
 	debug = c.GlobalBool("debug")
 	initialize_log()
+
+	log.Info("cluster-store endpoint: ", c.GlobalString("cluster-store"))
+	db.SetDBAddr(c.GlobalString("cluster-store"))
+
+	// start ipam server
+	go ipamdriver.StartServer()
 
 	log.Debug("docker endpoint: ", c.String("docker-endpoint"))
 	client, err := docker.NewVersionedClient(c.String("docker-endpoint"), "1.21")
