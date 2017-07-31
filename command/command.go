@@ -2,9 +2,11 @@ package command
 
 import (
 	"fmt"
+	"path/filepath"
 
 	"github.com/upccup/july/bridge"
-	//"github.com/upccup/july/db"
+	"github.com/upccup/july/config"
+	"github.com/upccup/july/db"
 	dns "github.com/upccup/july/dns-handler"
 	docker "github.com/upccup/july/docker-client"
 	event "github.com/upccup/july/docker-event"
@@ -175,4 +177,35 @@ func NewShowAssignedIPCommand() cli.Command {
 }
 
 func showAssignedIPAction(c *cli.Context) {
+	// show all assigned host IP
+	hostNodes, err := db.GetKeys(config.HostAssignedIPStorePath)
+	if err != nil {
+		log.Fatal("get assigned ip failed. Error: ", err)
+		return
+	}
+
+	log.Info("assgined host IP:   ")
+	for _, hostNode := range hostNodes {
+		log.Info(hostNode.Key, "  ", hostNode.Value)
+	}
+
+	log.Info("\nassigned container IP: ")
+
+	containerNets, err := db.GetKeys(config.ContainerIPStorePrefix)
+	if err != nil {
+		log.Fatal("get contaienr nets failed. Error: ", err)
+		return
+	}
+
+	for _, containerNet := range containerNets {
+		assignedNodes, err := db.GetKeys(filepath.Join(containerNet.Key, "assigned"))
+		if err != nil {
+			log.Fatalf("get contaienr net %s assigned ips failed. Error: %s", containerNet.Key, err.Error())
+			return
+		}
+
+		for _, assignedNode := range assignedNodes {
+			log.Info(assignedNode.Key, "  ", assignedNode.Value)
+		}
+	}
 }
