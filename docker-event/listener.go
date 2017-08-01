@@ -2,7 +2,10 @@ package event
 
 import (
 	"errors"
+	"path/filepath"
 
+	"github.com/upccup/july/config"
+	"github.com/upccup/july/db"
 	dns "github.com/upccup/july/dns-handler"
 	docker "github.com/upccup/july/docker-client"
 
@@ -38,6 +41,12 @@ func (listener *DockerListener) StartListenDockerAction() {
 
 	log.Info("add docker event listener success")
 
+	defer func() {
+		if err := listener.DockerClient.RemoveEventListener(eventsChan); err != nil {
+			log.Fatal(err)
+		}
+	}()
+
 	for {
 		select {
 		case e := <-eventsChan:
@@ -56,9 +65,15 @@ func (listener *DockerListener) HandleDockerEvent(e *docker.APIEvents) {
 
 	switch e.Action {
 	case EventContainerStart:
+		log.Infof("got container start event, container ID: %s", e.ID)
 		containerIPInfo, err := listener.GetContainerIPInfo(e.ID)
 		if err != nil {
 			log.Errorf("get container ip info failed. Error: %s", err.Error())
+			return
+		}
+
+		if err := db.SetKey(filepath.Join(config.ContainerDomainsStorePath, e.ID), containerIPInfo.Domain); err != nil {
+			log.Errorf("store container %s domain %s failed. Error: %s", e.ID, containerIPInfo.Domain, err.Error())
 			return
 		}
 
@@ -68,6 +83,22 @@ func (listener *DockerListener) HandleDockerEvent(e *docker.APIEvents) {
 		}
 	case EventContainerDie:
 		log.Infof("got container died event, container ID: %s", e.ID)
+		domainStoreKey := filepath.Join(config.ContainerDomainsStorePath, e.ID)
+		domain, err := db.GetKey(domainStoreKey)
+		if err != nil {
+			log.Errorf("get container %s domain failed. Error: %s", e.ID, err.Error())
+			return
+		}
+
+		if err := listener.DNSClient.DeleteDNSRecord(domain); err != nil {
+			log.Errorf("delete dns record %s failed. Error: %s", domain, err.Error())
+			return
+		}
+
+		if err := db.DeleteKey(domainStoreKey); err != nil {
+			log.Errorf("delete container %s dns from db failed. Error: %s", domainStoreKey, err.Error())
+			return
+		}
 	default:
 		log.Debugf("got event from docker: %#v, not be interested in it drop!!", e)
 		return

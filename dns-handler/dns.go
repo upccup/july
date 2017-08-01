@@ -19,8 +19,9 @@ type DNSClient struct {
 }
 
 const (
-	DNSPassword     = "abcc"
-	AddDNSRecordURL = "%s/api/domain_add"
+	DNSPassword        = "abcc"
+	AddDNSRecordURL    = "%s/api/domain_add"
+	DeleteDNSRecordURL = "%s/api/domain_delete"
 )
 
 type DNSRecord struct {
@@ -36,11 +37,6 @@ type AddressRecord struct {
 }
 
 func (dClient *DNSClient) AddDNSRecord(domain, address string) error {
-	timeStamp := strconv.FormatInt(time.Now().Unix(), 10)
-	tokenStrList := []string{timeStamp, timeStamp, DNSPassword}
-	tokenStr := strings.Join(tokenStrList, "")
-	token := fmt.Sprintf("%x", md5.Sum([]byte(tokenStr)))
-
 	addressRecord := AddressRecord{
 		Address: address,
 		Type:    "A",
@@ -64,10 +60,7 @@ func (dClient *DNSClient) AddDNSRecord(domain, address string) error {
 		return err
 	}
 
-	req.Header.Set("Auth-User", "yanhong3")
-	req.Header.Set("Auth-Random", timeStamp)
-	req.Header.Set("Auth-TimeStamp", timeStamp)
-	req.Header.Set("Auth-Token", token)
+	addAuthToRequestHeader(req)
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
@@ -94,6 +87,63 @@ func (dClient *DNSClient) AddDNSRecord(domain, address string) error {
 
 	log.Infof("add dns record got response %s", string(result))
 	return nil
+}
+
+func (dClient *DNSClient) DeleteDNSRecord(domain string) error {
+	dnsRecord := DNSRecord{
+		FullDomain: domain + ".cbpmgt.com.",
+		Main:       "cbpmgt.com.",
+	}
+
+	body, err := encodeData([]DNSRecord{dnsRecord})
+	if err != nil {
+		return err
+	}
+
+	deleteEndpoint := fmt.Sprintf(DeleteDNSRecordURL, dClient.Endpoint)
+	req, err := http.NewRequest("POST", deleteEndpoint, body)
+	if err != nil {
+		return err
+	}
+
+	addAuthToRequestHeader(req)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return err
+	}
+
+	if resp == nil {
+		return fmt.Errorf("add dns record failed: empty response")
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		result, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return err
+		}
+
+		return fmt.Errorf("delete dns record failed: status code %d, result %s", resp.StatusCode, string(result))
+	}
+
+	result, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+
+	log.Infof("delete dns record got response %s", string(result))
+	return nil
+}
+
+func addAuthToRequestHeader(req *http.Request) {
+	timeStamp := strconv.FormatInt(time.Now().Unix(), 10)
+	tokenStrList := []string{timeStamp, timeStamp, DNSPassword}
+	tokenStr := strings.Join(tokenStrList, "")
+	token := fmt.Sprintf("%x", md5.Sum([]byte(tokenStr)))
+	req.Header.Set("Auth-User", "yanhong3")
+	req.Header.Set("Auth-Random", timeStamp)
+	req.Header.Set("Auth-TimeStamp", timeStamp)
+	req.Header.Set("Auth-Token", token)
 }
 
 func encodeData(data interface{}) (*bytes.Buffer, error) {
