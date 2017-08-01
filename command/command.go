@@ -170,7 +170,11 @@ func createNetworkAction(c *cli.Context) {
 
 func NewShowAssignedIPCommand() cli.Command {
 	return cli.Command{
-		Name:   "ip-assigned",
+		Name: "ip-assigned",
+		Flags: []cli.Flag{
+			cli.BoolFlag{Name: "container", Usage: "show container ip pool"},
+			cli.BoolFlag{Name: "host", Usage: "show host ip pool"},
+		},
 		Usage:  "show the which has been assigned",
 		Action: showAssignedIPAction,
 	}
@@ -178,46 +182,85 @@ func NewShowAssignedIPCommand() cli.Command {
 
 func showAssignedIPAction(c *cli.Context) {
 	// show all assigned host IP
-	hostNodes, err := db.GetKeys(config.HostAssignedIPStorePath)
-	if err != nil {
-		log.Fatal("get assigned ip failed. Error: ", err)
-		return
-	}
-
-	log.Info("assgined host IP:   ")
-	for _, hostNode := range hostNodes {
-		log.Info(hostNode.Key, "  ", hostNode.Value)
-	}
-
-	log.Info("assigned container IP: ")
-
-	containerNets, err := db.GetKeys(config.ContainerIPStorePrefix)
-	if err != nil {
-		log.Fatal("get contaienr nets failed. Error: ", err)
-		return
-	}
-
-	for _, containerNet := range containerNets {
-		assignedNodes, err := db.GetKeys(filepath.Join(containerNet.Key, "assigned"))
+	if c.Bool("host") {
+		hostNodes, err := db.GetKeys(config.HostAssignedIPStorePath)
 		if err != nil {
-			log.Fatalf("get contaienr net %s assigned ips failed. Error: %s", containerNet.Key, err.Error())
+			log.Fatal("get assigned ip failed. Error: ", err)
 			return
 		}
 
-		for _, assignedNode := range assignedNodes {
-			log.Info(assignedNode.Key, "  ", assignedNode.Value)
+		log.Info("assgined host IP:   ")
+		for _, hostNode := range hostNodes {
+			log.Info(hostNode.Key, "  ", hostNode.Value)
+		}
+	}
+
+	if c.Bool("container") {
+		log.Info("assigned container IP: ")
+		containerNets, err := db.GetKeys(config.ContainerIPStorePrefix)
+		if err != nil {
+			log.Fatal("get contaienr nets failed. Error: ", err)
+			return
+		}
+
+		for _, containerNet := range containerNets {
+			assignedNodes, err := db.GetKeys(filepath.Join(containerNet.Key, "assigned"))
+			if err != nil {
+				log.Fatalf("get contaienr net %s assigned ips failed. Error: %s", containerNet.Key, err.Error())
+				return
+			}
+
+			for _, assignedNode := range assignedNodes {
+				log.Info(assignedNode.Key, "  ", assignedNode.Value)
+			}
 		}
 	}
 }
 
-//func NewShowIPPoolCommand() cli.Command {
-//	return cli.Command{
-//		Name:  "ip-pool",
-//		Usage: "show the ip poop",
-//		Flags: []cli.Flag{
-//			cli.BoolFlag{Name: "container", Value: true, Usage: "show container ip pool"},
-//			cli.BoolFlag{Name: "host", Value: true, Usage: "show host ip pool"},
-//		},
-//		Action: showIPPoolAction,
-//	}
-//}
+func NewShowIPPoolCommand() cli.Command {
+	return cli.Command{
+		Name:  "ip-pool",
+		Usage: "show the ip poop",
+		Flags: []cli.Flag{
+			cli.BoolFlag{Name: "container", Usage: "show container ip pool"},
+			cli.BoolFlag{Name: "host", Usage: "show host ip pool"},
+		},
+		Action: showIPPoolAction,
+	}
+}
+
+func showIPPoolAction(c *cli.Context) {
+	if c.Bool("host") {
+		hostNodes, err := db.GetKeys(config.HostIPPoolStorePath)
+		if err != nil {
+			log.Fatal("get assigned ip failed. Error: ", err)
+			return
+		}
+
+		log.Info("host IP pool:   ")
+		for _, hostNode := range hostNodes {
+			log.Info(hostNode.Key, "  ", hostNode.Value)
+		}
+	}
+
+	if c.Bool("container") {
+		log.Info("container IP pool: ")
+		containerNets, err := db.GetKeys(config.ContainerIPStorePrefix)
+		if err != nil {
+			log.Fatal("get contaienr nets failed. Error: ", err)
+			return
+		}
+
+		for _, containerNet := range containerNets {
+			idleNodes, err := db.GetKeys(filepath.Join(containerNet.Key, "pool"))
+			if err != nil {
+				log.Fatalf("get contaienr net %s assigned ips failed. Error: %s", containerNet.Key, err.Error())
+				return
+			}
+
+			for _, idleNode := range idleNodes {
+				log.Info(idleNode.Key, "  ", idleNode.Value)
+			}
+		}
+	}
+}

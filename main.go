@@ -29,6 +29,7 @@ func main() {
 		command.NewReleaseHostCommand(),
 		command.NewCreateNetworkCommand(),
 		command.NewShowAssignedIPCommand(),
+		command.NewShowIPPoolCommand(),
 	}
 	app.Run(os.Args)
 }
