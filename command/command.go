@@ -189,7 +189,7 @@ func showAssignedIPAction(c *cli.Context) {
 		log.Info(hostNode.Key, "  ", hostNode.Value)
 	}
 
-	log.Info("\nassigned container IP: ")
+	log.Info("assigned container IP: ")
 
 	containerNets, err := db.GetKeys(config.ContainerIPStorePrefix)
 	if err != nil {
@@ -209,3 +209,15 @@ func showAssignedIPAction(c *cli.Context) {
 		}
 	}
 }
+
+//func NewShowIPPoolCommand() cli.Command {
+//	return cli.Command{
+//		Name:  "ip-pool",
+//		Usage: "show the ip poop",
+//		Flags: []cli.Flag{
+//			cli.BoolFlag{Name: "container", Value: true, Usage: "show container ip pool"},
+//			cli.BoolFlag{Name: "host", Value: true, Usage: "show host ip pool"},
+//		},
+//		Action: showIPPoolAction,
+//	}
+//}

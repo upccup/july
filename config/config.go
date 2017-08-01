@@ -5,10 +5,11 @@ import (
 )
 
 const (
-	ContainerIPStorePrefix  = "/jdjr/containers"
-	HostAssignedIPStorePath = "/jdjr/hosts/assigned"
-	HostIPPoolStorePath     = "/jdjr/hosts/pool"
-	HostIPConfigStorePath   = "/jdjr/hosts/config"
+	ContainerIPStorePrefix    = "/jdjr/containers"
+	ContainerDomainsStorePath = "/jdjr/containers/domains"
+	HostAssignedIPStorePath   = "/jdjr/hosts/assigned"
+	HostIPPoolStorePath       = "/jdjr/hosts/pool"
+	HostIPConfigStorePath     = "/jdjr/hosts/config"
 )
 
 func ContainerIPPoolSotrePath(ipNet string) string {
