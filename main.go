@@ -24,6 +24,7 @@ func main() {
 	app.Commands = []cli.Command{
 		command.NewServerCommand(),
 		command.NewIPRangeCommand(),
+		command.NewAddHostCommand(),
 		command.NewReleaseIPCommand(),
 		command.NewReleaseHostCommand(),
 		command.NewCreateNetworkCommand(),

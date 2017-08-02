@@ -149,8 +149,14 @@ func addHostAction(c *cli.Context) {
 		return
 	}
 
-	if subnet == "" || net.ParseIP(subnet) == nil {
-		log.Errorf("invalid subnet argument: %s", subnet)
+	if subnet == "" {
+		log.Error("invalid subnet argument: empty subnet")
+		return
+	}
+
+	_, _, err := net.ParseCIDR(subnet)
+	if err != nil {
+		log.Error("invalid subnet argument: ", err)
 		return
 	}
 
