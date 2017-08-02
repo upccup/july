@@ -25,7 +25,6 @@ func main() {
 		command.NewServerCommand(),
 		command.NewIPRangeCommand(),
 		command.NewReleaseIPCommand(),
-		command.NewHostRangeCommand(),
 		command.NewReleaseHostCommand(),
 		command.NewCreateNetworkCommand(),
 		command.NewShowAssignedIPCommand(),
