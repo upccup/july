@@ -3,9 +3,7 @@ package bridge
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"path/filepath"
-	"strings"
 
 	"github.com/upccup/july/config"
 	"github.com/upccup/july/db"
@@ -48,12 +46,8 @@ func getConfig(ip string) (*IPConfig, error) {
 }
 
 func allocateHost(ip string) error {
-	if ip == "" {
-		return errors.New("arg ip is lack")
-	}
-
-	if err := db.DeleteKey(filepath.Join(config.HostIPPoolStorePath, ip)); err != nil {
-		return err
+	if !db.IsKeyExist(config.GetHostIPConfigStorePath(ip)) {
+		return errors.New("ip config not found")
 	}
 
 	if err := db.SetKey(filepath.Join(config.HostAssignedIPStorePath, ip), ""); err != nil {
@@ -62,31 +56,6 @@ func allocateHost(ip string) error {
 
 	log.Infof("Allocated host %s", ip)
 	return nil
-}
-
-func getHost(ip string) (string, error) {
-	ip_pool, err := db.GetKeys(config.HostIPPoolStorePath)
-	if err != nil {
-		return "", err
-	}
-
-	if len(ip_pool) == 0 {
-		return "", errors.New("Pool is empty")
-	}
-
-	if ip == "" {
-		find_ip := strings.Split(ip_pool[0].Key, "/")
-		ip = find_ip[len(find_ip)-1]
-	} else if !db.IsKeyExist(filepath.Join(config.HostIPPoolStorePath, ip)) {
-		return "", errors.New(fmt.Sprintf("Host %s not in pool", ip))
-	}
-
-	if checkIPAssigned(ip) {
-		return "", errors.New(fmt.Sprintf("Host %s has been allocated", ip))
-	}
-
-	log.Infof("Host IP: %s", ip)
-	return ip, nil
 }
 
 func checkIPAssigned(ip string) bool {
@@ -98,16 +67,11 @@ func ReleaseHost(ip string) error {
 		log.Fatal(err)
 	}
 
-	if err := db.SetKey(filepath.Join(config.HostIPPoolStorePath, ip), ""); err != nil {
-		log.Fatal(err)
-	}
-
 	log.Infof("Release host %s", ip)
 	return nil
 }
 
 func CreateNetwork(ip, networkName string) {
-	var assigned_ip string
 	var config *IPConfig
 	var err error
 
@@ -115,15 +79,11 @@ func CreateNetwork(ip, networkName string) {
 		log.Fatal(err)
 	}
 
-	if assigned_ip, err = getHost(ip); err != nil {
+	if err = allocateHost(ip); err != nil {
 		log.Fatal(err)
 	}
 
-	if err = allocateHost(assigned_ip); err != nil {
-		log.Fatal(err)
-	}
-
-	if err = createBridge(assigned_ip, config.Subnet, config.Gateway, networkName); err != nil {
+	if err = createBridge(ip, config.Subnet, config.Gateway, networkName); err != nil {
 		log.Fatal(err)
 	}
 
@@ -133,5 +93,5 @@ func CreateNetwork(ip, networkName string) {
 	//	log.Fatal(err)
 	//}
 	//log.Infof("Create network %s done", assigned_ip)
-	log.Infof("Create network on ip:%s done, please restart network or reboot!!", assigned_ip)
+	log.Infof("Create network on ip:%s done, please restart network or reboot!!", ip)
 }
