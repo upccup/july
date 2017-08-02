@@ -9,7 +9,6 @@ import (
 
 	"github.com/upccup/july/config"
 	"github.com/upccup/july/db"
-	"github.com/upccup/july/util"
 
 	log "github.com/Sirupsen/logrus"
 )
@@ -19,42 +18,33 @@ type IPConfig struct {
 	Gateway string
 }
 
-func AllocateHostRange(ip_start, ip_end, gateway string) []string {
-	ips := util.GetIPRange(ip_start, ip_end)
-	ip_net, mask := util.GetIPNetAndMask(ip_start)
-	for _, ip := range ips {
-		if checkIPAssigned(ip) {
-			log.Warnf("IP %s has been allocated", ip)
-			continue
-		}
-		db.SetKey(filepath.Join(config.HostIPPoolStorePath, ip), "")
-	}
-	initializeConfig(ip_net, fmt.Sprint(ip_net, "/", mask), gateway)
-	fmt.Println("Allocate Hosts Done! Total:", len(ips))
-	return ips
-}
-
-func initializeConfig(ip_net, subnet, gateway string) error {
-	ipConfig := &IPConfig{Subnet: subnet, Gateway: gateway}
-	config_bytes, _ := json.Marshal(ipConfig)
-	if err := db.SetKey(config.HostIPConfigStorePath, string(config_bytes)); err != nil {
+func AddHostIP(ip, subnet, gateway string) error {
+	ipConfig := IPConfig{Subnet: subnet, Gateway: gateway}
+	configBytes, err := json.Marshal(ipConfig)
+	if err != nil {
 		return err
 	}
 
-	log.Infof("Initialized Config %s for network %s success", string(config_bytes), ip_net)
+	if err := db.SetKey(config.GetHostIPConfigStorePath(ip), string(configBytes)); err != nil {
+		return err
+	}
+
 	return nil
 }
 
-func getConfig() (*IPConfig, error) {
-	config, err := db.GetKey(config.HostIPConfigStorePath)
+func getConfig(ip string) (*IPConfig, error) {
+	config, err := db.GetKey(config.GetHostIPConfigStorePath(ip))
 	if err != nil {
 		return nil, err
 	}
 
-	log.Debugf("getConfig %s", config)
+	log.Debugf("getConfig of ip %s success. config: %s", ip, config)
 	conf := &IPConfig{}
-	json.Unmarshal([]byte(config), conf)
-	return conf, err
+	if err := json.Unmarshal([]byte(config), conf); err != nil {
+		return nil, err
+	}
+
+	return conf, nil
 }
 
 func allocateHost(ip string) error {
@@ -121,7 +111,7 @@ func CreateNetwork(ip, networkName string) {
 	var config *IPConfig
 	var err error
 
-	if config, err = getConfig(); err != nil {
+	if config, err = getConfig(ip); err != nil {
 		log.Fatal(err)
 	}
 

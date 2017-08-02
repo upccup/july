@@ -2,6 +2,7 @@ package command
 
 import (
 	"fmt"
+	"net"
 	"path/filepath"
 
 	"github.com/upccup/july/bridge"
@@ -125,29 +126,38 @@ func releaseHostAction(c *cli.Context) {
 	bridge.ReleaseHost(ip)
 }
 
-func NewHostRangeCommand() cli.Command {
+func NewAddHostCommand() cli.Command {
 	return cli.Command{
-		Name:  "host-range",
-		Usage: "set the ip range for hosts",
+		Name:  "add-host",
+		Usage: "add a host ip and config for create docker network",
 		Flags: []cli.Flag{
-			cli.StringFlag{Name: "ip-start", Usage: "the first IP for containers in CIDR notation"},
-			cli.StringFlag{Name: "ip-end", Usage: "the last IP for containers in CIDR notation"},
-			cli.StringFlag{Name: "gateway", Usage: "the default gateway for the docker container network"},
+			cli.StringFlag{Name: "ip", Usage: "the host ip"},
+			cli.StringFlag{Name: "subnet", Usage: "the subnet where the host is located"},
+			cli.StringFlag{Name: "gateway", Usage: "the host gateway"},
 		},
-		Action: hostRangeAction,
+		Action: addHostAction,
 	}
-
 }
 
-func hostRangeAction(c *cli.Context) {
-	ip_start := c.String("ip-start")
-	ip_end := c.String("ip-end")
+func addHostAction(c *cli.Context) {
+	ip := c.String("ip")
+	subnet := c.String("subnet")
 	gateway := c.String("gateway")
-	if ip_start == "" || ip_end == "" || gateway == "" {
-		fmt.Println("Invalid args")
+
+	if ip == "" || net.ParseIP(ip) == nil {
+		log.Errorf("invalid ip argument: %s", ip)
 		return
 	}
-	bridge.AllocateHostRange(ip_start, ip_end, gateway)
+
+	if subnet == "" || net.ParseIP(subnet) == nil {
+		log.Errorf("invalid subnet argument: %s", subnet)
+		return
+	}
+
+	if gateway == "" || net.ParseIP(gateway) == nil {
+		log.Errorf("invalid gateway argument: %s", gateway)
+		return
+	}
 }
 
 func NewCreateNetworkCommand() cli.Command {
