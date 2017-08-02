@@ -164,6 +164,13 @@ func addHostAction(c *cli.Context) {
 		log.Errorf("invalid gateway argument: %s", gateway)
 		return
 	}
+
+	if err := bridge.AddHostIP(ip, subnet, gateway); err != nil {
+		log.Error("add host failed. Error: ", err)
+		return
+	}
+
+	return
 }
 
 func NewCreateNetworkCommand() cli.Command {
