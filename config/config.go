@@ -8,8 +8,6 @@ const (
 	ContainerIPStorePrefix    = "/jdjr/containers"
 	ContainerDomainsStorePath = "/jdjr/container-domains"
 	HostAssignedIPStorePath   = "/jdjr/hosts/assigned"
-	HostIPPoolStorePath       = "/jdjr/hosts/pool"
-	HostIPConfigStorePath     = "/jdjr/hosts/config"
 )
 
 func GetHostIPConfigStorePath(ip string) string {
