@@ -45,14 +45,14 @@ func AllocateIPRange(ip_start, ip_end string) []string {
 func ReleaseIP(ipNet, ip string) error {
 	if err := db.DeleteKey(filepath.Join(config.ContainerAssignedIPSotrePath(ipNet), ip)); err != nil {
 		log.Infof("Skip Release IP %s", ip)
-		return nil
+		return err
 	}
 
 	if err := db.SetKey(filepath.Join(config.ContainerIPPoolSotrePath(ipNet), ip), ""); err != nil {
-		log.Infof("Release IP %s", ip)
-		return nil
+		return err
 	}
 
+	log.Infof("Release IP %s", ip)
 	return nil
 }
 
