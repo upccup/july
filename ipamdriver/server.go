@@ -34,12 +34,20 @@ func AllocateIPRange(ip_start, ip_end string) []string {
 			log.Warnf("IP %s has been allocated", ip)
 			continue
 		}
-		db.SetKey(filepath.Join(config.ContainerIPPoolSotrePath(ipNet), ip), "")
+
+		if err := AddContainerIP(ipNet, ip); err != nil {
+			log.Errorf("add contaienr ip %s failed. Error: %s", ip, err.Error())
+			continue
+		}
 	}
 
 	initializeConfig(ipNet, mask)
 	log.Info("Allocate Containers IP Done! Total:", len(ips))
 	return ips
+}
+
+func AddContainerIP(ipNet, ip string) error {
+	return db.SetKey(filepath.Join(config.ContainerIPPoolSotrePath(ipNet), ip), "")
 }
 
 func ReleaseIP(ipNet, ip string) error {
