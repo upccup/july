@@ -30,6 +30,7 @@ func main() {
 		command.NewCreateNetworkCommand(),
 		command.NewShowAssignedIPCommand(),
 		command.NewShowIPPoolCommand(),
+		command.NewAddContainerIPCommand(),
 	}
 	app.Run(os.Args)
 }
