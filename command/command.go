@@ -12,7 +12,6 @@ import (
 	docker "github.com/upccup/july/docker-client"
 	event "github.com/upccup/july/docker-event"
 	"github.com/upccup/july/ipamdriver"
-	"github.com/upccup/july/util"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
@@ -84,26 +83,72 @@ func ipRangeAction(c *cli.Context) {
 	ipamdriver.AllocateIPRange(ip_start, ip_end)
 }
 
+func NewAddContainerIPCommand() cli.Command {
+	return cli.Command{
+		Name:  "add-ip",
+		Usage: "add an container IP address for container",
+		Flags: []cli.Flag{
+			cli.StringFlag{Name: "ip", Usage: "the new IP"},
+			cli.StringFlag{Name: "subnet", Usage: "the subnet of new IP"},
+		},
+		Action: addContainerIPAction,
+	}
+}
+
+func addContainerIPAction(c *cli.Context) {
+	ip := c.String("ip")
+	subnet := c.String("subnet")
+
+	if ip == "" || net.ParseIP(ip) == nil {
+		log.Errorf("invalid ip argument: %s", ip)
+		return
+	}
+
+	if subnet == "" {
+		log.Error("invalid subnet argument: empty subnet")
+		return
+	}
+
+	if err := ipamdriver.AddContainerIP(subnet, ip); err != nil {
+		log.Fatalf("release ip %s failed, Errro: %s", ip, err.Error())
+		return
+	}
+
+	log.Infof("release ip %s success.", ip)
+}
+
 func NewReleaseIPCommand() cli.Command {
 	return cli.Command{
 		Name:  "release-ip",
 		Usage: "release the specified IP address",
 		Flags: []cli.Flag{
-			cli.StringFlag{Name: "ip", Usage: "the IP to release in CIDR notation"},
+			cli.StringFlag{Name: "ip", Usage: "the release IP"},
+			cli.StringFlag{Name: "subnet", Usage: "the subnet of release IP"},
 		},
 		Action: releaseIPAction,
 	}
 }
 
 func releaseIPAction(c *cli.Context) {
-	ip_args := c.String("ip")
-	if ip_args == "" {
-		fmt.Println("Invalid args")
+	ip := c.String("ip")
+	subnet := c.String("subnet")
+
+	if ip == "" || net.ParseIP(ip) == nil {
+		log.Errorf("invalid ip argument: %s", ip)
 		return
 	}
-	ip_net, _ := util.GetIPNetAndMask(ip_args)
-	ip, _ := util.GetIPAndCIDR(ip_args)
-	ipamdriver.ReleaseIP(ip_net, ip)
+
+	if subnet == "" {
+		log.Error("invalid subnet argument: empty subnet")
+		return
+	}
+
+	if err := ipamdriver.ReleaseIP(subnet, ip); err != nil {
+		log.Fatalf("release ip %s failed, Errro: %s", ip, err.Error())
+		return
+	}
+
+	log.Infof("release ip %s success.", ip)
 }
 
 func NewReleaseHostCommand() cli.Command {
