@@ -20,6 +20,9 @@ const (
 	EventContainerKill    = "kill"
 	EventContainerDie     = "die"
 	EventContainerDestory = "destory"
+
+	DomainMainKey = "JR_DOMAIN_MAIN"
+	DomainNameKey = "JR_DOMAIN_NAME"
 )
 
 type DockerListener struct {
@@ -30,6 +33,7 @@ type DockerListener struct {
 type ContainerIPInfo struct {
 	IP     string
 	Domain string
+	Main   string
 	Labels map[string]string
 }
 
@@ -77,7 +81,7 @@ func (listener *DockerListener) HandleDockerEvent(e *docker.APIEvents) {
 			return
 		}
 
-		if err := listener.DNSClient.AddDNSRecord(containerIPInfo.Domain, containerIPInfo.IP); err != nil {
+		if err := listener.DNSClient.AddDNSRecord(containerIPInfo.Main, containerIPInfo.Domain, containerIPInfo.IP); err != nil {
 			log.Errorf("add dns record failed. Error: %s", err.Error())
 			return
 		}
@@ -116,9 +120,19 @@ func (listener *DockerListener) GetContainerIPInfo(ID string) (*ContainerIPInfo,
 		return nil, errors.New("get container IP info failed: null response")
 	}
 
-	//TODO(upccup): read container labels get domain info
-	var domain, ip string
-	domain = "dockertest"
+	containerLabels := containerInfo.Config.Labels
+
+	domainMain, ok := containerLabels[DomainMainKey]
+	if !ok {
+		return nil, errors.New("get container domain main info failed: null response")
+	}
+
+	domainName, ok := containerLabels[DomainNameKey]
+	if !ok {
+		return nil, errors.New("get container domain name info failed: null response")
+	}
+
+	var ip string
 	for _, value := range containerInfo.NetworkSettings.Networks {
 		ip = value.IPAddress
 	}
@@ -127,5 +141,5 @@ func (listener *DockerListener) GetContainerIPInfo(ID string) (*ContainerIPInfo,
 		return nil, errors.New("container ip is empty")
 	}
 
-	return &ContainerIPInfo{Domain: domain, IP: ip}, nil
+	return &ContainerIPInfo{Domain: domainName, Main: domainMain, IP: ip}, nil
 }

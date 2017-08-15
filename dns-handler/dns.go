@@ -36,7 +36,7 @@ type AddressRecord struct {
 	Area    int    `json:"area"`
 }
 
-func (dClient *DNSClient) AddDNSRecord(domain, address string) error {
+func (dClient *DNSClient) AddDNSRecord(domainMain, domainName, address string) error {
 	addressRecord := AddressRecord{
 		Address: address,
 		Type:    "A",
@@ -44,8 +44,8 @@ func (dClient *DNSClient) AddDNSRecord(domain, address string) error {
 	}
 
 	dnsRecord := DNSRecord{
-		FullDomain:     domain + ".cbpmgt.com.",
-		Main:           "cbpmgt.com.",
+		FullDomain:     domainName + "." + domainMain,
+		Main:           domainMain,
 		AddressRecords: []AddressRecord{addressRecord},
 	}
 
