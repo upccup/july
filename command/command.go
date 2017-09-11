@@ -8,6 +8,7 @@ import (
 	"github.com/upccup/july/bridge"
 	"github.com/upccup/july/config"
 	"github.com/upccup/july/db"
+	dns "github.com/upccup/july/dns-handler"
 	docker "github.com/upccup/july/docker-client"
 	event "github.com/upccup/july/docker-event"
 	"github.com/upccup/july/ipamdriver"
@@ -25,6 +26,11 @@ func NewServerCommand() cli.Command {
 				Name:  "docker-endpoint",
 				Value: "tcp://127.0.0.1:2376",
 				Usage: "the docker daemon endpoint. [$DOCKER_ENDPOINT]",
+			},
+			cli.StringFlag{
+				Name:  "dns-endpoint",
+				Value: "http://127.0.0.1:9999",
+				Usage: "the dns console server endpoint. [$DNS_ENDPOINT]",
 			},
 		},
 		Action: startServerAction,
@@ -47,8 +53,10 @@ func startServerAction(c *cli.Context) {
 		return
 	}
 
+	log.Debug("dns endpoint: ", c.String("dns-endpoint"))
 	dockerEvenListener := &event.DockerListener{
 		DockerClient: client,
+		DNSClient:    &dns.DNSClient{Endpoint: c.String("dns-endpoint")},
 	}
 	dockerEvenListener.StartListenDockerAction()
 }

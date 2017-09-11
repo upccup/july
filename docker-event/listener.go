@@ -28,6 +28,7 @@ const (
 
 type DockerListener struct {
 	DockerClient *docker.Client
+	DNSClient    *dns.DNSClient
 }
 
 type ContainerIPInfo struct {
@@ -87,7 +88,7 @@ func (listener *DockerListener) HandleDockerEvent(e *docker.APIEvents) {
 			return
 		}
 
-		if err := dns.AddDNSRecord(containerIPInfo.Zone, containerIPInfo.Domain, containerIPInfo.IP); err != nil {
+		if err := listener.DNSClient.AddDNSRecord(containerIPInfo.Zone, containerIPInfo.Domain, containerIPInfo.IP); err != nil {
 			log.Errorf("add dns record failed. Error: %s", err.Error())
 			return
 		}
@@ -106,7 +107,7 @@ func (listener *DockerListener) HandleDockerEvent(e *docker.APIEvents) {
 			return
 		}
 
-		if err := dns.RemoveDNSRecord(ipInfo.Zone, ipInfo.Domain); err != nil {
+		if err := listener.DNSClient.DeleteDNSRecord(ipInfo.Domain); err != nil {
 			log.Errorf("delete dns record %s.%s failed. Error: %s", ipInfo.Zone, ipInfo.Domain, err.Error())
 			return
 		}
