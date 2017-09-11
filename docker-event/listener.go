@@ -1,6 +1,7 @@
 package event
 
 import (
+	"encoding/json"
 	"errors"
 	"path/filepath"
 
@@ -27,13 +28,12 @@ const (
 
 type DockerListener struct {
 	DockerClient *docker.Client
-	DNSClient    *dns.DNSClient
 }
 
 type ContainerIPInfo struct {
 	IP     string
 	Domain string
-	Main   string
+	Zone   string
 	Labels map[string]string
 }
 
@@ -76,26 +76,38 @@ func (listener *DockerListener) HandleDockerEvent(e *docker.APIEvents) {
 			return
 		}
 
-		if err := db.SetKey(filepath.Join(config.ContainerDomainsStorePath, e.ID), containerIPInfo.Domain); err != nil {
-			log.Errorf("store container %s domain %s failed. Error: %s", e.ID, containerIPInfo.Domain, err.Error())
+		ipInfoBytes, err := json.Marshal(containerIPInfo)
+		if err != nil {
+			log.Errorf("Marshal ContainerIPInfo: %+v failed. Err: %s", containerIPInfo, err.Error())
 			return
 		}
 
-		if err := listener.DNSClient.AddDNSRecord(containerIPInfo.Main, containerIPInfo.Domain, containerIPInfo.IP); err != nil {
+		if err := db.SetKey(filepath.Join(config.ContainerDomainsStorePath, e.ID), string(ipInfoBytes)); err != nil {
+			log.Errorf("store container %s domain %s failed. Error: %s", e.ID, string(ipInfoBytes), err.Error())
+			return
+		}
+
+		if err := dns.AddDNSRecord(containerIPInfo.Zone, containerIPInfo.Domain, containerIPInfo.IP); err != nil {
 			log.Errorf("add dns record failed. Error: %s", err.Error())
 			return
 		}
 	case EventContainerDie:
 		log.Infof("got container died event, container ID: %s", e.ID)
 		domainStoreKey := filepath.Join(config.ContainerDomainsStorePath, e.ID)
-		domain, err := db.GetKey(domainStoreKey)
+		domainBytes, err := db.GetKey(domainStoreKey)
 		if err != nil {
 			log.Errorf("get container %s domain failed. Error: %s", e.ID, err.Error())
 			return
 		}
 
-		if err := listener.DNSClient.DeleteDNSRecord(domain); err != nil {
-			log.Errorf("delete dns record %s failed. Error: %s", domain, err.Error())
+		var ipInfo ContainerIPInfo
+		if err := json.Unmarshal([]byte(domainBytes), &ipInfo); err != nil {
+			log.Errorf("Unmarshal %s failed. Error: %s", string(domainBytes), err.Error())
+			return
+		}
+
+		if err := dns.RemoveDNSRecord(ipInfo.Zone, ipInfo.Domain); err != nil {
+			log.Errorf("delete dns record %s.%s failed. Error: %s", ipInfo.Zone, ipInfo.Domain, err.Error())
 			return
 		}
 
@@ -141,5 +153,5 @@ func (listener *DockerListener) GetContainerIPInfo(ID string) (*ContainerIPInfo,
 		return nil, errors.New("container ip is empty")
 	}
 
-	return &ContainerIPInfo{Domain: domainName, Main: domainMain, IP: ip}, nil
+	return &ContainerIPInfo{Domain: domainName, Zone: domainMain, IP: ip}, nil
 }
