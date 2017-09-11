@@ -22,7 +22,7 @@ const (
 	EventContainerDie     = "die"
 	EventContainerDestory = "destory"
 
-	DomainMainKey = "JR_DOMAIN_MAIN"
+	DomainZoneKey = "JR_DOMAIN_ZONE"
 	DomainNameKey = "JR_DOMAIN_NAME"
 )
 
@@ -134,7 +134,7 @@ func (listener *DockerListener) GetContainerIPInfo(ID string) (*ContainerIPInfo,
 
 	containerLabels := containerInfo.Config.Labels
 
-	domainMain, ok := containerLabels[DomainMainKey]
+	domainMain, ok := containerLabels[DomainZoneKey]
 	if !ok {
 		return nil, errors.New("get container domain main info failed: null response")
 	}
